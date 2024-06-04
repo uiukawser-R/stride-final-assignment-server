@@ -114,25 +114,25 @@ async function run() {
             res.json(result);
         })
 
-        // app.get("/users/get/:id", async (req, res) => {
-        //     const id = req.params.id;
-        //     console.log(id);
-        //     await usersCollection.findOne({ _id: new ObjectId(id) });
-        //     res.send(token);
-        // });
-
-
         app.get("/users/get/:id", async (req, res) => {
-            const { id } = req.params;
-            if (!ObjectId.isValid(id)) {
-                return res.status(400).send("Invalid ID format");
-            }
-            const result = await usersCollection.findOne({ _id: new ObjectId(id) });
-            if (!result) {
-                return res.status(404).send("User not found");
-            }
-            res.send(result);
+            const id = req.params.id;
+            console.log(id);
+            await usersCollection.findOne({ _id: new ObjectId(id) });
+            res.send(token);
         });
+
+
+        // app.get("/users/get/:id", async (req, res) => {
+        //     const { id } = req.params;
+        //     if (!ObjectId.isValid(id)) {
+        //         return res.status(400).send("Invalid ID format");
+        //     }
+        //     const result = await usersCollection.findOne({ _id: new ObjectId(id) });
+        //     if (!result) {
+        //         return res.status(404).send("User not found");
+        //     }
+        //     res.send(result);
+        // });
 
 
         app.get("/users/:email", async (req, res) => {
@@ -183,6 +183,3 @@ app.listen(port, (req, res) => {
 
 
 
-
-// kawserahmed574
-// S8lMytp2fdqgbHoh
