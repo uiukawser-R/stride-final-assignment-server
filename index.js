@@ -49,7 +49,7 @@ const client = new MongoClient(uri, {
 
 async function run() {
     try {
-        await client.connect();
+        // await client.connect();
 
 
 
@@ -58,17 +58,21 @@ async function run() {
         const eventsCollection = eventDB.collection("eventsCollection");
         const usersCollection = userDB.collection("usersCollection");
 
+
+        app.get("/events", async (req, res) => {
+            const eventData = eventsCollection.find();
+            const result = await eventData.toArray();
+            res.send(result);
+        })
+
+
         app.post("/events",verifyToken, async (req, res) => {
             const eventsData = req.body;
             const result = await eventsCollection.insertOne(eventsData);
             res.send(result);
         })
 
-        app.get("/events", async (req, res) => {
-            const eventData = await eventsCollection.find();
-            const result = await eventData.toArray();
-            res.send(result);
-        })
+       
         app.get("/events/:id", async (req, res) => {
             const id = req.params.id;
             const eventData = await eventsCollection.findOne({ _id: new ObjectId(id) });
