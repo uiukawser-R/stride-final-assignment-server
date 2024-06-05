@@ -66,7 +66,7 @@ async function run() {
         })
 
 
-        app.post("/events",verifyToken, async (req, res) => {
+        app.post("/events", async (req, res) => {
             const eventsData = req.body;
             const result = await eventsCollection.insertOne(eventsData);
             res.send(result);
@@ -78,7 +78,7 @@ async function run() {
             const eventData = await eventsCollection.findOne({ _id: new ObjectId(id) });
             res.send(eventData);
         })
-        app.patch("/events/:id",verifyToken, async (req, res) => {
+        app.patch("/events/:id", async (req, res) => {
             const id = req.params.id;
             const updateData = req.body;
             const eventData = await eventsCollection.updateOne(
@@ -114,25 +114,25 @@ async function run() {
             res.json(result);
         })
 
-        app.get("/users/get/:id", async (req, res) => {
-            const id = req.params.id;
-            console.log(id);
-            await usersCollection.findOne({ _id: new ObjectId(id) });
-            res.send(token);
-        });
-
-
         // app.get("/users/get/:id", async (req, res) => {
-        //     const { id } = req.params;
-        //     if (!ObjectId.isValid(id)) {
-        //         return res.status(400).send("Invalid ID format");
-        //     }
-        //     const result = await usersCollection.findOne({ _id: new ObjectId(id) });
-        //     if (!result) {
-        //         return res.status(404).send("User not found");
-        //     }
-        //     res.send(result);
+        //     const id = req.params.id;
+        //     console.log(id);
+        //     await usersCollection.findOne({ _id: new ObjectId(id) });
+        //     res.send(token);
         // });
+
+
+        app.get("/users/get/:id", async (req, res) => {
+            const { id } = req.params;
+            if (!ObjectId.isValid(id)) {
+                return res.status(400).send("Invalid ID format");
+            }
+            const result = await usersCollection.findOne({ _id: new ObjectId(id) });
+            if (!result) {
+                return res.status(404).send("User not found");
+            }
+            res.send(result);
+        });
 
 
         app.get("/users/:email", async (req, res) => {
