@@ -27,7 +27,7 @@ function createToken(user) {
 
 function verifyToken(req, res, next) {
     const token = req.headers.authorization.split(" ")[1];
-    const verify = jwt.verify(token, "secret");
+    const verify = jwt.verify(token, 'secret');
     if (!verify?.email) {
       return res.send("You are not authorized");
     }
@@ -66,7 +66,7 @@ async function run() {
         })
 
 
-        app.post("/events", async (req, res) => {
+        app.post("/events",verifyToken, async (req, res) => {
             const eventsData = req.body;
             const result = await eventsCollection.insertOne(eventsData);
             res.send(result);
@@ -78,7 +78,7 @@ async function run() {
             const eventData = await eventsCollection.findOne({ _id: new ObjectId(id) });
             res.send(eventData);
         })
-        app.patch("/events/:id", async (req, res) => {
+        app.patch("/events/:id",verifyToken, async (req, res) => {
             const id = req.params.id;
             const updateData = req.body;
             const eventData = await eventsCollection.updateOne(
@@ -87,7 +87,7 @@ async function run() {
             );
             res.send(eventData);
         })
-        app.delete("/events/:id", async (req, res) => {
+        app.delete("/events/:id",verifyToken, async (req, res) => {
             const id = req.params.id;
             const result = await eventsCollection.deleteOne(
                 { _id: new ObjectId(id) },
@@ -110,8 +110,8 @@ async function run() {
                 });
             }
 
-            const result = await usersCollection.insertOne(user);
-            res.json(result);
+            await usersCollection.insertOne(user);
+            res.json({token});
         })
 
         // app.get("/users/get/:id", async (req, res) => {
@@ -141,7 +141,7 @@ async function run() {
             res.send(result);
         })
 
-        app.patch("/users/:email", async (req, res) => {
+        app.patch("/users/:email",verifyToken, async (req, res) => {
             const email = req.params.email;
             const userData = req.body;
             const result = await usersCollection.updateOne(
@@ -159,17 +159,6 @@ async function run() {
     }
 }
 run().catch(console.dir);
-
-
-
-
-
-
-
-
-
-
-
 
 app.get("/", (req, res) => {
     res.send("Route is working");
